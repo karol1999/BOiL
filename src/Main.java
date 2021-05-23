@@ -8,6 +8,7 @@ public class Main {
         logic.obliczPierwszePrzyblizenie(logic.obliczJednostkowyZysk());
         logic.wspolczynnikiAlfaBeta(logic.obliczJednostkowyZysk());
         logic.calculateArrayDelta();
+        logic.findCycle();
         System.out.println("Witaj");
     }
 }

@@ -15,7 +15,8 @@ public class Logic { // logika biznesowa calego programu
     private int[] wspBeta;
 
     private int[][] deltaArray;
-    private int[][] coordinates;
+    private boolean [][] isInCycle; // if true means that it is in cycle otherwise false
+    // private int[][] coordinates;
 
 
     // warunek stopu funkcji (obliczPierwszePrzybliżenie), pierwsze rozwiązanie bazowe
@@ -265,7 +266,7 @@ public class Logic { // logika biznesowa calego programu
         wspBeta = wspoczynnikiBetaTablica;
     }
 
-
+    // policzenie tablicy delta
     public void calculateArrayDelta(){
         deltaArray = new int[3][4];
 
@@ -293,19 +294,73 @@ public class Logic { // logika biznesowa calego programu
         }
     }
 
+    // znajdujemy cykl
     public void findCycle()
     {
         // 1, 2, 3 ,4
-        int[][] coordinates = new int[2][4];
+//        int[][] coordinates = new int[2][4];
+//
+//        int maxValue = deltaArray[0][0];
+//        // znajdujemy maksymalny element w tablicy delta
+//        for(int row=0;row<deltaArray.length;row++){
+//            for(int column=0;column<deltaArray[row].length;column++){
+//                if(deltaArray[row][column] > maxValue){
+//                    maxValue = deltaArray[row][column];
+//                    coordinates[0][0] = row;
+//                    coordinates[1][0] = column;
+//                }
+//                else {
+//                    continue;
+//                }
+//            }
+//        }
+//
+//        // konczymy poniewaz mamy rozwiazanie optymalne
+//        if(maxValue < 0){
+//            return;
+//        }
+//
+//        // sprawdzamy sąsiadów, mamy zawsze 4 mozliwosci
+//        int row = deltaArray.length;
+//        int column = deltaArray[row].length;
+//
+//        // sprawdzamy gore
+//        if(deltaArray[coordinates[0][0]-1][coordinates[0][1]] == Integer.MIN_VALUE && (coordinates[0][0]-1) < deltaArray.length){
+//
+//        }
 
-        int maxValue = deltaArray[0][0];
+        // ------------------------------------------ nowa wersja ---------------------------------------------------- //
+
+        isInCycle = new boolean[3][4]; // rozmiar taki jak delta array
+
+//        deltaArray[0][0] = Integer.MIN_VALUE;
+//        deltaArray[0][1] = -3;
+//        deltaArray[0][2] = Integer.MIN_VALUE;
+//        deltaArray[0][3] = -10;
+//
+//        deltaArray[1][0] = Integer.MIN_VALUE;
+//        deltaArray[1][1] = -4;
+//        deltaArray[1][2] = 1;
+//        deltaArray[1][3] = -9;
+//
+//        deltaArray[2][0] = -6;
+//        deltaArray[2][1] = -5;
+//        deltaArray[2][2] = -7;
+//        deltaArray[2][3] = -8;
+
+        int secondNodeX = 0; // x-współrzędna pierwszego noda i potem czwartego
+        int fourthNodeY = 0; // y-wspolrzedna pierwszego noda i potem czwartego
+        int thirdNodeY = 0;
+        // int thirdNodeX = 0;
+
+        int maxValue = Integer.MIN_VALUE;
         // znajdujemy maksymalny element w tablicy delta
         for(int row=0;row<deltaArray.length;row++){
             for(int column=0;column<deltaArray[row].length;column++){
                 if(deltaArray[row][column] > maxValue){
                     maxValue = deltaArray[row][column];
-                    coordinates[0][0] = row;
-                    coordinates[1][0] = column;
+                    secondNodeX = row;
+                    fourthNodeY = column;
                 }
                 else {
                     continue;
@@ -318,14 +373,61 @@ public class Logic { // logika biznesowa calego programu
             return;
         }
 
-        // sprawdzamy sąsiadów, mamy zawsze 4 mozliwosci
-        int row = deltaArray.length;
-        int column = deltaArray[row].length;
+        isInCycle[secondNodeX][fourthNodeY] = true;
 
-        // sprawdzamy gore
-        if(deltaArray[coordinates[0][0]-1][coordinates[0][1]] == Integer.MIN_VALUE && (coordinates[0][0]-1) < deltaArray.length){
-
+        // szukanie drugiego węzła
+        for(int column=0;column<deltaArray[0].length;column++){ // dlatego 0 bo kazdy wiersza ma ta sama dlugosc, lecimy po kolumnach
+            if(column==fourthNodeY || deltaArray[secondNodeX][column]!=Integer.MIN_VALUE){
+                continue;
+            }
+            else if(deltaArray[secondNodeX][column]==Integer.MIN_VALUE){
+                //boolean thirdNodeFound = existsThirdNode(column); // dostaniemy informacje czy trzeci wezel istnieje w poszukiwanej kolumnie
+                if(existsThirdNode(column, secondNodeX)==false){
+                    continue;
+                }
+                else{ // if true
+                    isInCycle[secondNodeX][column] = true;
+                    thirdNodeY = column; //
+                }
+            }
         }
+
+        // szukanie trzeciego węzła
+        for(int row=0;row<deltaArray.length;row++){
+            if(row==secondNodeX || deltaArray[row][thirdNodeY]!=Integer.MIN_VALUE){ // jezeli
+                continue;
+            }else if(deltaArray[row][thirdNodeY]==Integer.MIN_VALUE){
+                if(existsFourthNode(row, fourthNodeY)){
+                    isInCycle[row][fourthNodeY] = true; // ustawienie czwartego wezla
+                    isInCycle[row][thirdNodeY] = true; // ustawienie trzeciego węzła
+                }
+            }
+        }
+        System.out.println();
     }
-    
+
+    private boolean existsThirdNode(int actualColumn, int potentialSecondNodeX){
+        for(int row=0;row<deltaArray.length;row++){
+            if(row==potentialSecondNodeX){
+                continue;
+            }
+
+            if(deltaArray[row][actualColumn]==Integer.MIN_VALUE){
+                return true;
+            }else{
+                continue;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean existsFourthNode(int actualRow, int fourthNodeColumn){
+        if(deltaArray[actualRow][fourthNodeColumn]==Integer.MIN_VALUE){
+            return true;
+        }
+
+        return false;
+    }
+
 }
