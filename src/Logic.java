@@ -17,6 +17,8 @@ public class Logic { // logika biznesowa calego programu
     private int[][] deltaArray;
     private boolean [][] isInCycle; // if true means that it is in cycle otherwise false
     // private int[][] coordinates;
+    private boolean [][] plusOrMinus; // true -> +, false -> -
+
 
 
     // warunek stopu funkcji (obliczPierwszePrzybliżenie), pierwsze rozwiązanie bazowe
@@ -332,6 +334,7 @@ public class Logic { // logika biznesowa calego programu
         // ------------------------------------------ nowa wersja ---------------------------------------------------- //
 
         isInCycle = new boolean[3][4]; // rozmiar taki jak delta array
+        plusOrMinus = isInCycle;
 
 //        deltaArray[0][0] = Integer.MIN_VALUE;
 //        deltaArray[0][1] = -3;
@@ -373,7 +376,8 @@ public class Logic { // logika biznesowa calego programu
             return;
         }
 
-        isInCycle[secondNodeX][fourthNodeY] = true;
+        isInCycle[secondNodeX][fourthNodeY] = true; // pierwszy element zawsze będzie w cyklu dodatnim
+        plusOrMinus[secondNodeX][fourthNodeY] = true; // pierwszy element cyklu zawsze dodatni
 
         // szukanie drugiego węzła
         for(int column=0;column<deltaArray[0].length;column++){ // dlatego 0 bo kazdy wiersza ma ta sama dlugosc, lecimy po kolumnach
@@ -387,11 +391,13 @@ public class Logic { // logika biznesowa calego programu
                 }
                 else{ // if true
                     isInCycle[secondNodeX][column] = true;
-                    thirdNodeY = column; //
+                    plusOrMinus[secondNodeX][column] = false; // pierwszy element to cykl dodatni
+                    thirdNodeY = column;
                 }
             }
         }
 
+        System.out.println();
         // szukanie trzeciego węzła
         for(int row=0;row<deltaArray.length;row++){
             if(row==secondNodeX || deltaArray[row][thirdNodeY]!=Integer.MIN_VALUE){ // jezeli
@@ -400,10 +406,14 @@ public class Logic { // logika biznesowa calego programu
                 if(existsFourthNode(row, fourthNodeY)){
                     isInCycle[row][fourthNodeY] = true; // ustawienie czwartego wezla
                     isInCycle[row][thirdNodeY] = true; // ustawienie trzeciego węzła
+                    plusOrMinus[row][fourthNodeY] = false; // czwarty element ujemny
+                    plusOrMinus[row][thirdNodeY] = true; // trzeci element dodatni
                 }
             }
         }
         System.out.println();
+
+        // 
     }
 
     private boolean existsThirdNode(int actualColumn, int potentialSecondNodeX){
@@ -429,5 +439,11 @@ public class Logic { // logika biznesowa calego programu
 
         return false;
     }
+
+    private void recalculateobliczPierwszePrzyblizenie(){
+
+
+    }
+
 
 }
