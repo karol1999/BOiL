@@ -1,7 +1,3 @@
-import java.net.Inet4Address;
-import java.util.ArrayList;
-import java.util.List;
-
 public class Logic { // logika biznesowa calego programu
 
     private static final int ILOSC_DOSTAWCOW = 2;
@@ -16,7 +12,6 @@ public class Logic { // logika biznesowa calego programu
 
     private int[][] deltaArray;
     private boolean [][] isInCycle; // if true means that it is in cycle otherwise false
-    // private int[][] coordinates;
     private boolean [][] plusOrMinus; // true -> +, false -> -
 
 
@@ -300,37 +295,6 @@ public class Logic { // logika biznesowa calego programu
     // znajdujemy cykl
     public void findCycle()
     {
-        // 1, 2, 3 ,4
-//        int[][] coordinates = new int[2][4];
-//
-//        int maxValue = deltaArray[0][0];
-//        // znajdujemy maksymalny element w tablicy delta
-//        for(int row=0;row<deltaArray.length;row++){
-//            for(int column=0;column<deltaArray[row].length;column++){
-//                if(deltaArray[row][column] > maxValue){
-//                    maxValue = deltaArray[row][column];
-//                    coordinates[0][0] = row;
-//                    coordinates[1][0] = column;
-//                }
-//                else {
-//                    continue;
-//                }
-//            }
-//        }
-//
-//        // konczymy poniewaz mamy rozwiazanie optymalne
-//        if(maxValue < 0){
-//            return;
-//        }
-//
-//        // sprawdzamy sąsiadów, mamy zawsze 4 mozliwosci
-//        int row = deltaArray.length;
-//        int column = deltaArray[row].length;
-//
-//        // sprawdzamy gore
-//        if(deltaArray[coordinates[0][0]-1][coordinates[0][1]] == Integer.MIN_VALUE && (coordinates[0][0]-1) < deltaArray.length){
-//
-//        }
 
         // ------------------------------------------ nowa wersja ---------------------------------------------------- //
 
@@ -355,7 +319,6 @@ public class Logic { // logika biznesowa calego programu
         int secondNodeX = 0; // x-współrzędna pierwszego noda i potem czwartego
         int fourthNodeY = 0; // y-wspolrzedna pierwszego noda i potem czwartego
         int thirdNodeY = 0;
-        // int thirdNodeX = 0;
 
         int maxValue = Integer.MIN_VALUE;
         // znajdujemy maksymalny element w tablicy delta
@@ -392,7 +355,6 @@ public class Logic { // logika biznesowa calego programu
                 }
                 else{ // if true
                     isInCycle[secondNodeX][column] = true;
-                    // System.out.println("row = " + secondNodeX + " column = " + column);
                     plusOrMinus[secondNodeX][column] = false; // pierwszy element to cykl dodatni
                     thirdNodeY = column;
                 }
@@ -408,8 +370,6 @@ public class Logic { // logika biznesowa calego programu
                 if(existsFourthNode(row, fourthNodeY)){
                     isInCycle[row][fourthNodeY] = true; // ustawienie czwartego wezla
                     isInCycle[row][thirdNodeY] = true; // ustawienie trzeciego węzła
-                    // System.out.println("row = " + row + " column = " + fourthNodeY + " czwarty wezel");
-                    // System.out.println("row = " + row + " column = " + thirdNodeY + " trzeci wezel");
                     plusOrMinus[row][fourthNodeY] = false; // czwarty element ujemny
                     plusOrMinus[row][thirdNodeY] = true; // trzeci element dodatni
                 }

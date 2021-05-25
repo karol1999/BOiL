@@ -9,6 +9,9 @@ public class Main {
         logic.wspolczynnikiAlfaBeta(logic.obliczJednostkowyZysk());
         logic.calculateArrayDelta();
         logic.findCycle();
+
+
+
         System.out.println("Witaj");
     }
 }
