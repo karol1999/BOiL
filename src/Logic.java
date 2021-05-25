@@ -95,6 +95,7 @@ public class Logic { // logika biznesowa calego programu
         for(int row = 0; row < resultTablicaPierwszePrzyblizenieMaxMatrix.length; row++){
             for(int column = 0; column < resultTablicaPierwszePrzyblizenieMaxMatrix[row].length; column++){
 
+                // warunek stopu, bez tego nie zadziala
                 if(stopCondition(tablicaZWspolrzednymiJuzZapisanymi) == false){
                     return resultTablicaPierwszePrzyblizenieMaxMatrix;
                 }
@@ -334,7 +335,7 @@ public class Logic { // logika biznesowa calego programu
         // ------------------------------------------ nowa wersja ---------------------------------------------------- //
 
         isInCycle = new boolean[3][4]; // rozmiar taki jak delta array
-        plusOrMinus = isInCycle;
+        plusOrMinus = new boolean[3][4]; // = isInCycle -> bardzo źle!
 
 //        deltaArray[0][0] = Integer.MIN_VALUE;
 //        deltaArray[0][1] = -3;
@@ -391,6 +392,7 @@ public class Logic { // logika biznesowa calego programu
                 }
                 else{ // if true
                     isInCycle[secondNodeX][column] = true;
+                    // System.out.println("row = " + secondNodeX + " column = " + column);
                     plusOrMinus[secondNodeX][column] = false; // pierwszy element to cykl dodatni
                     thirdNodeY = column;
                 }
@@ -398,7 +400,7 @@ public class Logic { // logika biznesowa calego programu
         }
 
         System.out.println();
-        // szukanie trzeciego węzła
+        // szukanie trzeciego węzła, czwartego węzła
         for(int row=0;row<deltaArray.length;row++){
             if(row==secondNodeX || deltaArray[row][thirdNodeY]!=Integer.MIN_VALUE){ // jezeli
                 continue;
@@ -406,6 +408,8 @@ public class Logic { // logika biznesowa calego programu
                 if(existsFourthNode(row, fourthNodeY)){
                     isInCycle[row][fourthNodeY] = true; // ustawienie czwartego wezla
                     isInCycle[row][thirdNodeY] = true; // ustawienie trzeciego węzła
+                    // System.out.println("row = " + row + " column = " + fourthNodeY + " czwarty wezel");
+                    // System.out.println("row = " + row + " column = " + thirdNodeY + " trzeci wezel");
                     plusOrMinus[row][fourthNodeY] = false; // czwarty element ujemny
                     plusOrMinus[row][thirdNodeY] = true; // trzeci element dodatni
                 }
@@ -413,7 +417,8 @@ public class Logic { // logika biznesowa calego programu
         }
         System.out.println();
 
-        // 
+        // korekta tablicy pierwsze rozwiązanie bazowe metodą maksymalnego elementu macierzy
+        recalculateObliczPierwszePrzyblizenie(isInCycle, plusOrMinus);
     }
 
     private boolean existsThirdNode(int actualColumn, int potentialSecondNodeX){
@@ -440,9 +445,80 @@ public class Logic { // logika biznesowa calego programu
         return false;
     }
 
-    private void recalculateobliczPierwszePrzyblizenie(){
+    // zamiana Integer.MIN_VALUE na 0
+    private void convertMinValueToZero(){
+        for(int row=0;row<resultTablicaPierwszePrzyblizenieMaxMatrix.length;row++){
+            for(int column=0;column<resultTablicaPierwszePrzyblizenieMaxMatrix[row].length;column++){
+                if(resultTablicaPierwszePrzyblizenieMaxMatrix[row][column]==Integer.MIN_VALUE){
+                    resultTablicaPierwszePrzyblizenieMaxMatrix[row][column]=0;
+                }
+                else{
+                    continue;
+                }
+            }
+        }
+    }
+
+    // zmiana 0 na Integer.MIN_VALUE
+    private void convertZeroToMinValue(){
+        for(int row=0;row<resultTablicaPierwszePrzyblizenieMaxMatrix.length;row++){
+            for(int column=0;column<resultTablicaPierwszePrzyblizenieMaxMatrix[row].length;column++){
+                if(resultTablicaPierwszePrzyblizenieMaxMatrix[row][column]==0){
+                    resultTablicaPierwszePrzyblizenieMaxMatrix[row][column]=Integer.MIN_VALUE;
+                }
+                else{
+                    continue;
+                }
+            }
+        }
+    }
 
 
+
+    private void recalculateObliczPierwszePrzyblizenie(boolean[][] isInCycle, boolean[][] plusOrMinus){
+
+        // znalezienie minimalnej wartosci w podtablicy
+        int min = Integer.MAX_VALUE;
+        int zero = 0;
+        for(int row=0;row<isInCycle.length;row++){
+            for(int column=0;column<isInCycle[row].length;column++){
+                if(resultTablicaPierwszePrzyblizenieMaxMatrix[row][column]==Integer.MIN_VALUE){
+                    if(isInCycle[row][column] && zero < min && plusOrMinus[row][column] == false){
+                        min = resultTablicaPierwszePrzyblizenieMaxMatrix[row][column];
+                    }
+                    else{
+                        continue;
+                    }
+                }else {
+                    if(isInCycle[row][column] && resultTablicaPierwszePrzyblizenieMaxMatrix[row][column] < min && plusOrMinus[row][column] == false){
+                        min = resultTablicaPierwszePrzyblizenieMaxMatrix[row][column];
+                    }
+                    else{
+                        continue;
+                    }
+                }
+            }
+        }
+
+        // korekta tablicy z wartościami bazowymi
+        convertMinValueToZero();
+
+        for(int row=0;row<isInCycle.length;row++){
+            for(int column=0;column<isInCycle[row].length;column++){
+                if(isInCycle[row][column] && plusOrMinus[row][column] == true){
+                    resultTablicaPierwszePrzyblizenieMaxMatrix[row][column] = resultTablicaPierwszePrzyblizenieMaxMatrix[row][column] + min;
+                }
+                else if(isInCycle[row][column] && plusOrMinus[row][column] == false){
+                    resultTablicaPierwszePrzyblizenieMaxMatrix[row][column] = resultTablicaPierwszePrzyblizenieMaxMatrix[row][column] - min;
+                }
+                else{
+                    continue;
+                }
+            }
+        }
+
+        convertZeroToMinValue();
+        System.out.println();
     }
 
 
