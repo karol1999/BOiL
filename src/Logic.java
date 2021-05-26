@@ -14,8 +14,6 @@ public class Logic { // logika biznesowa calego programu
     private boolean [][] isInCycle; // if true means that it is in cycle otherwise false
     private boolean [][] plusOrMinus; // true -> +, false -> -
 
-
-
     // warunek stopu funkcji (obliczPierwszePrzybliżenie), pierwsze rozwiązanie bazowe
     private boolean stopCondition(int[][] array){
 
@@ -295,7 +293,6 @@ public class Logic { // logika biznesowa calego programu
     // znajdujemy cykl
     public void findCycle()
     {
-
         // ------------------------------------------ nowa wersja ---------------------------------------------------- //
 
         isInCycle = new boolean[3][4]; // rozmiar taki jak delta array

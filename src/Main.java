@@ -5,6 +5,12 @@ public class Main {
 
         // obliczenie jednostkowego zysku
         //logic.obliczJednostkowyZysk(); TO DOBRZE DZIALA
+
+//        while(true){
+//            //if()
+//        }
+
+
         logic.obliczPierwszePrzyblizenie(logic.obliczJednostkowyZysk());
         logic.wspolczynnikiAlfaBeta(logic.obliczJednostkowyZysk());
         logic.calculateArrayDelta();
